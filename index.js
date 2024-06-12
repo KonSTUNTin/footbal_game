@@ -131,7 +131,7 @@ class Field{
     logic(){
         let team
         let power = this.power[this.ball.seg_1]
-        if(this.ball.team_1==1) power = 1 - power
+        if(this.ball.team_1 == 1) power = 1 - power
 
         let enemy = Math.random();
         let change = (enemy > power)?1:0;
@@ -142,51 +142,35 @@ class Field{
 
         let nearest = []
 
+        //let vector = (team == 0)? 1: -1;
+
         for (let i = 0; i < this.players[team].length; i++) {
+
             let player = this.players[team][i]
-            if(player.seg == this.ball.seg_1)nearest.push(player)
-            if(player.seg == this.ball.seg_1 - 1)nearest.push(player)
-            if(player.seg == this.ball.seg_1 + 1)nearest.push(player)
-            
+            if(change == 1&& player.num < 11){
+                if(player.seg == this.ball.seg_1)nearest.push(player)
+                if(player.seg == this.ball.seg_1 - 1)nearest.push(player)
+                if(player.seg == this.ball.seg_1 + 1)nearest.push(player)
+            }
+            if(change == 0){
+                if(player.seg == this.ball.seg_1)nearest.push(player)
+                if(player.seg == this.ball.seg_1 - 1)nearest.push(player)
+                if(player.seg == this.ball.seg_1 + 1)nearest.push(player)
+            }
         }
+        
 
         let index = Math.round(
             Math.random() * (nearest.length - 1)
         )
-        if(nearest[index].num == 10)console.log(this.ball.player_1, team)    
 
         let player = nearest[index].num 
-
-        let goal = 0
-        let mute = 0
-        if(player == this.players[0].length - 1){
-            goal = 1
+        if(change == 1&&player==11){
+            
+            console.log('now')
         }
-        if(this.ball.player_1 == this.players[0].length - 1){
-            mute = 1
-        }
+        if(player == 11) console.log(this.ball.player_0 +' ' + this.ball.team_0 + '-' + this.ball.player_1 + ' ' + this.ball.team_1)
 
-        let team_txt = [
-            'левого',
-            'правого'
-        ]
-
-
-        if(team != this.ball.team_1){
-            if(player == this.players[0].length - 1){
-                //console.log('Бьет '+ this.ball.player_1 + ' ' + team_txt[team] +'!' )
-            } else {
-                //console.log('Перехват от' + ' '+ this.ball.player_1 + ', мяч теперь у ' + player + ' ' + team_txt[team])
-            }
-        } else{
-            if(goal == 1 && mute == 0){
-                //console.log('Aтака от ' + team_txt[team] + ' '+ this.ball.player_1)
-                
-            } else {
-                //if (mute == 0)//console.log('Пас от ' + team_txt[team] + ' '+ this.ball.player_1 + ' к ' + player)
-            }
-        } 
-      
 
         this.ball.seg_0 = this.ball.seg_1   
         this.ball.player_0 = this.ball.player_1
@@ -196,14 +180,16 @@ class Field{
         this.ball.seg_1 = nearest[index].seg
 
         if(this.ball.player_0 == this.players[0].length - 1){
-            console.log('GOAL!')
+            let txt = (this.ball.team_0 == 0)?'белым':'черным'
+            console.log('GOAL!' + txt)
             if(this.ball.team_0 == 0)this.score[0]++
             if(this.ball.team_0 == 1)this.score[1]++
+            let start = (this.ball.team_0 == 0)?1:0 
             this.ball = {
                 seg_0: 1,
                 seg_1: 1,
-                team_0: 0,
-                team_1: 0,
+                team_0: start,
+                team_1: start,
                 player_0: 5,
                 player_1: 5,
                 x: 0,
@@ -213,53 +199,52 @@ class Field{
     }
 
     init_cards(){
-        this.card = []
-        for (let i = 0; i < 10; i++) {//effects.length
+        for (let i = 0; i < 8; i++) {//effects.length
+            let index = Math.round(Math.random() * (effects.length - 1))
+            let index_2 = Math.round(Math.random() * (effects.length - 1))
+
             let el = document.createElement("div");
+            let el_2 = document.createElement("div");
             el.classList.add('card');
+            el_2.classList.add('card');
 
             let name = document.createElement('span')
+            let name_2 = document.createElement('span')
             name.classList.add('gray')
-            name.innerText = effects[i].name
+            name_2.classList.add('gray')
 
             let effect = document.createElement('span')
+            let effect_2 = document.createElement('span')
             effect.classList.add('num')
-            effect.innerText = effects[i].effect
+            effect_2.classList.add('num')
+
+            name.innerText = effects[index].name
+            effect.innerText = effects[index].effect
+            name_2.innerText = effects[index_2].name
+            effect_2.innerText = effects[index_2].effect
 
             el.appendChild(name)
             el.appendChild(effect)
+            el_2.appendChild(name_2)
+            el_2.appendChild(effect_2)
 
             el.draggable = true;
-            
-            
-            let el_1 = el.cloneNode(true)
+            el_2.draggable = true;
+
             el.id = 'left_' + i
-            el_1.id = 'right_' + i
-            document.getElementById('deck_1').appendChild(el_1)
+            el_2.id = 'right_' + i
+            document.getElementById('deck_1').appendChild(el_2)
             document.getElementById('deck_0').appendChild(el)
 
             el.addEventListener('dragstart', (event)=>{this.dragStart(event)});
-            el_1.addEventListener('dragstart', (event)=>{this.dragStart(event)});
+            el_2.addEventListener('dragstart', (event)=>{this.dragStart(event)});
             el.setAttribute('team', 0);
-            el_1.setAttribute('team', 1);
-            el.setAttribute('effect', effects[i].effect);
-            el_1.setAttribute('effect', effects[i].effect);
+            el_2.setAttribute('team', 1);
+            el.setAttribute('effect', effects[index].effect);
+            el_2.setAttribute('effect', effects[index].effect);
 
-            let obj = {
-                index: i,
-                el: el,
-                effect: effects[i].effect
-            }
-            let obj_1 = {
-                index: i,
-                el: el_1,
-                effect: effects[i].effect
-            }
+          
 
-
-
-            this.card.push(obj)
-            this.card.push(obj_1)
         }
 
         
@@ -361,7 +346,7 @@ class Field{
         
         this.players.push(team_1)
         this.players.push(team_2)
-       
+        console.log(this.players)
     }
     animate_players(){
         let l = this.players[0].length
