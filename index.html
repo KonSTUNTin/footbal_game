@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div id="layout">
+        
+        <div class="string">
+            <div class = 'half'>
+                Левые
+                <div class = 'horizontal'>
+                    <input onsubmit="reload()" type="number" id="t_0_0" value="4" name="speed" min="1" max="5" />
+                    <input onsubmit="reload()" type="number" id="t_0_1" value="3" name="speed" min="1" max="5" /> 
+                    <input onsubmit="reload()" type="number" id="t_0_2" value="3" name="speed" min="1" max="5" />     
+                </div>
+            </div>
+            <div class = 'half'>
+                Правые
+                <div class = 'horizontal'>
+                    <input onsubmit="reload()" type="number" id="t_1_2" value="4" name="speed" min="1" max="5" />
+                    <input onsubmit="reload()" type="number" id="t_1_1" value="3" name="speed" min="1" max="5" /> 
+                    <input onsubmit="reload()" type="number" id="t_1_0" value="3" name="speed" min="1" max="5" />     
+                </div>
+            </div>
+            <div class="half">
+                Скорость симуляции
+                <div class = 'horizontal'>
+                    <input type="number" id="speed" value="50" name="speed" min="1" max="100" />  
+                </div>
+            </div>
+            <div class="half">
+                <button id = 'submit_button'>Применить</button>
+            </div>
+        </div>
+        
+      
+
+        <script src="./index.js"></script>
+    </div>
+</body>
+</html>
