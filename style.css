@@ -92,3 +92,7 @@ canvas {
     align-items: flex-end;
     flex-wrap: wrap;
 }
+span.gray {
+    font-size: 14px;
+    color: #aaaaaa;
+}

@@ -3,6 +3,38 @@ let ctx;
 let canvas;
 let w = 512;
 let field;
+let effects = [
+        { name: 'Пас', effect: 1 },
+        { name: 'Защита', effect: 1 },
+        { name: 'Скорость', effect: 1 },
+        { name: 'Игра головой', effect: 1 },
+        { name: 'Перехват', effect: 1 },
+        { name: 'Удар', effect: 2 },
+        { name: 'Дриблинг', effect: 2 },
+        { name: 'Выносливость', effect: 1 },
+        { name: 'Тактика', effect: 2 },
+        { name: 'Командный дух', effect: 1 },
+        { name: 'Атака', effect: 2 },
+        { name: 'Контратака', effect: 2 },
+        { name: 'Сейв', effect: 1 },
+        { name: 'Отбор', effect: 1 },
+        { name: 'Пенальти', effect: 3 },
+        { name: 'Угловой удар', effect: 1 },
+        { name: 'Штрафной удар', effect: 2 },
+        { name: 'Вбрасывание', effect: 1 },
+        { name: 'Выход один на один', effect: 3 },
+        { name: 'Ложный замах', effect: 2 },
+        { name: 'Игра на опережение', effect: 2 },
+        { name: 'Выбивание мяча', effect: 1 },
+        { name: 'Передача вразрез', effect: 2 },
+        { name: 'Дальний удар', effect: 3 },
+        { name: 'Командная тактика', effect: 2 },
+        { name: 'Замена игрока', effect: 1 },
+        { name: 'Игра без мяча', effect: 1 },
+        { name: 'Блокировка удара', effect: 2 },
+        { name: 'Подкат', effect: 2 },
+        { name: 'Сильный удар', effect: 3 }
+]
 
 
 
@@ -52,6 +84,7 @@ class Field{
         };
         this.time = 0
         this.init_players()
+        this.init_cards()
         this.calculate_power()
     }
    
@@ -166,7 +199,61 @@ class Field{
         }
     }
 
+    init_cards(){
+        this.card = []
+        for (let i = 0; i < 10; i++) {//effects.length
+            let el = document.createElement("div");
+            el.classList.add('card');
 
+            let name = document.createElement('span')
+            name.classList.add('gray')
+            name.innerText = effects[i].name
+
+            let effect = document.createElement('span')
+            effect.classList.add('num')
+            effect.innerText = effects[i].effect
+
+            el.appendChild(name)
+            el.appendChild(effect)
+
+            el.draggable = true;
+            
+            
+            let el_1 = el.cloneNode(true)
+            el.id = 'left_' + i
+            el_1.id = 'right_' + i
+            document.getElementById('deck_1').appendChild(el_1)
+            document.getElementById('deck_0').appendChild(el)
+
+            el.addEventListener('dragstart', (event)=>{this.dragStart(event)});
+            el_1.addEventListener('dragstart', (event)=>{this.dragStart(event)});
+
+            this.card.push(el)
+            this.card.push(el_1)
+        }
+
+        
+        this.targets = document.querySelectorAll('.target');
+       
+        this.targets.forEach(target => {
+            target.addEventListener('dragover', (event)=>{this.dragOver(event)});
+            target.addEventListener('drop', (event)=>{this.drop(event)});
+        });
+    }
+    drop(event) {
+        event.preventDefault();
+        let id = event.dataTransfer.getData('text/plain');
+        let card = document.getElementById(id);
+        event.target.appendChild(card);
+        console.log(id + ' ' + event.target.id)
+    }
+
+    dragStart(event) {
+        event.dataTransfer.setData('text/plain', event.target.id);
+    }
+    dragOver(event) {
+        event.preventDefault();
+    }
 
     init_players(){
         let team_1 = []
@@ -438,32 +525,3 @@ document.getElementById('submit_button').onclick = ()=>{
 }
 
 
-document.addEventListener('DOMContentLoaded', (event) => {
-    const cards = document.querySelectorAll('.card');
-    const targets = document.querySelectorAll('.target');
-
-    cards.forEach(card => {
-        card.addEventListener('dragstart', dragStart);
-    });
-
-    targets.forEach(target => {
-        target.addEventListener('dragover', dragOver);
-        target.addEventListener('drop', drop);
-    });
-
-    function dragStart(event) {
-        event.dataTransfer.setData('text/plain', event.target.id);
-    }
-
-    function dragOver(event) {
-        event.preventDefault();
-    }
-
-    function drop(event) {
-        event.preventDefault();
-        const id = event.dataTransfer.getData('text/plain');
-        const card = document.getElementById(id);
-        event.target.appendChild(card);
-        console.log(id + ' ' + event.target.id)
-    }
-});
