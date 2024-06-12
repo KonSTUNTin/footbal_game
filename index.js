@@ -55,7 +55,7 @@ class Field{
             'white',
             'red'
         ]
-        
+        this.score =[0,0]
         this.ctx.fillStyle = this.color[1]
         this.ctx.strokeStyle = this.color[1]
         this.init_cards()
@@ -75,7 +75,6 @@ class Field{
             parseFloat(document.getElementById('t_1_2').value), 
             parseFloat(document.getElementById('t_1_3').value)];
         this.players = [];
-        this.score = [0, 0]
         this.ball = {
             seg_0: 1,
             seg_1: 1,
@@ -88,11 +87,11 @@ class Field{
         };
         this.balance = []
         this.balance = [
-            [1,1],
-            [this.team_1[0], this.team_2[0]],
-            [this.team_1[1], this.team_2[1]],
-            [this.team_1[2], this.team_2[2]],
-            [1,1]
+            [1 + this.effects[0][0],1 + this.effects[0][1]],
+            [this.team_1[0] + this.effects[1][0], this.team_2[0] + this.effects[1][1]],
+            [this.team_1[1] + this.effects[2][0], this.team_2[1] + this.effects[2][1]],
+            [this.team_1[2] + + this.effects[3][0], this.team_2[2] + this.effects[3][1]],
+            [1 + + this.effects[4][0],1 + this.effects[4][1]]
         ]
         this.time = 0
         this.init_players()
@@ -106,14 +105,12 @@ class Field{
             let k
             let t_0 = this.balance[i][0]
             let t_1 = this.balance[i][1]
-            k = t_0 / (t_0 + t_1)
-            // if (t_0 == t_1) k = .5
-            // if (t_0 > t_1) k = t_1 / t_0
-            // if (t_0 < t_1) k = 1 - t_0 / t_1
+            k = t_0 * t_0 * t_0 / (t_0 * t_0 * t_0 + t_1 * t_1 * t_1)
             this.power.push(
                 k
             )
         }
+
         console.log(this.power)
         
     }
@@ -134,21 +131,19 @@ class Field{
     logic(){
         let team
         let power = this.power[this.ball.seg_1]
+        if(this.ball.team_1==1) power = 1 - power
 
-        if(parseFloat(this.ball.player_1) == 11){
-           
-            team = this.ball.team_1
-        } else {    
-            team = Math.random()
-            if(power == undefined) power = .5;
-            team = (team >= power)?0:1
-        }
-        
+        let enemy = Math.random();
+        let change = (enemy > power)?1:0;
+
+        if (change==1 && this.ball.team_1==0)team = 1
+        if (change==1 && this.ball.team_1==1)team = 0
+        if (change==0 || this.ball.player_1 == 10 || this.ball.player_1 == 11)team = this.ball.team_1
 
         let nearest = []
+
         for (let i = 0; i < this.players[team].length; i++) {
             let player = this.players[team][i]
-            
             if(player.seg == this.ball.seg_1)nearest.push(player)
             if(player.seg == this.ball.seg_1 - 1)nearest.push(player)
             if(player.seg == this.ball.seg_1 + 1)nearest.push(player)
@@ -158,6 +153,8 @@ class Field{
         let index = Math.round(
             Math.random() * (nearest.length - 1)
         )
+        if(nearest[index].num == 10)console.log(this.ball.player_1, team)    
+
         let player = nearest[index].num 
 
         let goal = 0
@@ -177,16 +174,16 @@ class Field{
 
         if(team != this.ball.team_1){
             if(player == this.players[0].length - 1){
-                console.log('Бьет '+ this.ball.player_1 + ' ' + team_txt[team] +'!' )
+                //console.log('Бьет '+ this.ball.player_1 + ' ' + team_txt[team] +'!' )
             } else {
-                console.log('Перехват от' + ' '+ this.ball.player_1 + ', мяч теперь у ' + player + ' ' + team_txt[team])
+                //console.log('Перехват от' + ' '+ this.ball.player_1 + ', мяч теперь у ' + player + ' ' + team_txt[team])
             }
         } else{
             if(goal == 1 && mute == 0){
-                console.log('Aтака от ' + team_txt[team] + ' '+ this.ball.player_1)
+                //console.log('Aтака от ' + team_txt[team] + ' '+ this.ball.player_1)
                 
             } else {
-                if (mute == 0)console.log('Пас от ' + team_txt[team] + ' '+ this.ball.player_1 + ' к ' + player)
+                //if (mute == 0)//console.log('Пас от ' + team_txt[team] + ' '+ this.ball.player_1 + ' к ' + player)
             }
         } 
       
@@ -288,7 +285,8 @@ class Field{
             ){
             event.target.appendChild(card);
             console.log(this.balance[segment][team_card])
-            this.balance[segment][team_card] += effect
+            this.balance[segment][team_card] += effect 
+            this.effects[segment][team_card] += effect 
             this.calculate_power()
             
         }
