@@ -96,3 +96,6 @@ span.gray {
     font-size: 14px;
     color: #aaaaaa;
 }
+.hide {
+    display: none;
+}

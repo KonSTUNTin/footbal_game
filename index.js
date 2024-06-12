@@ -47,6 +47,9 @@ class Field{
         this.cell = (w * 2 - this.margin * 2) / 3;
         this.t_margin = 30
         this.r = 20
+        this.effects = [
+            [0,0],[0,0],[0,0],[0,0],[0,0]
+        ]
         this.color = [
             'black',
             'white',
@@ -55,6 +58,7 @@ class Field{
         
         this.ctx.fillStyle = this.color[1]
         this.ctx.strokeStyle = this.color[1]
+        this.init_cards()
         this.init_all()
        
         this.animate()
@@ -63,13 +67,13 @@ class Field{
         this.power = [];
         this.speed = document.getElementById('speed').value;
         this.team_1 = [
-            document.getElementById('t_0_0').value, 
-            document.getElementById('t_0_1').value, 
-            document.getElementById('t_0_2').value];
+            parseFloat(document.getElementById('t_0_1').value), 
+            parseFloat(document.getElementById('t_0_2').value), 
+            parseFloat(document.getElementById('t_0_3').value)];
         this.team_2 = [
-            document.getElementById('t_1_0').value, 
-            document.getElementById('t_1_1').value, 
-            document.getElementById('t_1_2').value];
+            parseFloat(document.getElementById('t_1_1').value), 
+            parseFloat(document.getElementById('t_1_2').value), 
+            parseFloat(document.getElementById('t_1_3').value)];
         this.players = [];
         this.score = [0, 0]
         this.ball = {
@@ -82,23 +86,35 @@ class Field{
             x: 0,
             y: 0
         };
+        this.balance = []
+        this.balance = [
+            [1,1],
+            [this.team_1[0], this.team_2[0]],
+            [this.team_1[1], this.team_2[1]],
+            [this.team_1[2], this.team_2[2]],
+            [1,1]
+        ]
         this.time = 0
         this.init_players()
-        this.init_cards()
+        
         this.calculate_power()
     }
    
     calculate_power(){
-        for (let i = 0; i < 3; i++) {
+        this.power = []
+        for (let i = 0; i < this.balance.length; i++) {
             let k
-            if (this.team_1[i] == this.team_2[i]) k = .5
-            if (this.team_1[i] > this.team_2[i]) k = parseFloat(this.team_2[i]) / parseFloat(this.team_1[i])
-            if (this.team_1[i] < this.team_2[i]) k = 1 - parseFloat(this.team_1[i]) / parseFloat(this.team_2[i])
-            
+            let t_0 = this.balance[i][0]
+            let t_1 = this.balance[i][1]
+            k = t_0 / (t_0 + t_1)
+            // if (t_0 == t_1) k = .5
+            // if (t_0 > t_1) k = t_1 / t_0
+            // if (t_0 < t_1) k = 1 - t_0 / t_1
             this.power.push(
                 k
             )
         }
+        console.log(this.power)
         
     }
 
@@ -227,9 +243,26 @@ class Field{
 
             el.addEventListener('dragstart', (event)=>{this.dragStart(event)});
             el_1.addEventListener('dragstart', (event)=>{this.dragStart(event)});
+            el.setAttribute('team', 0);
+            el_1.setAttribute('team', 1);
+            el.setAttribute('effect', effects[i].effect);
+            el_1.setAttribute('effect', effects[i].effect);
 
-            this.card.push(el)
-            this.card.push(el_1)
+            let obj = {
+                index: i,
+                el: el,
+                effect: effects[i].effect
+            }
+            let obj_1 = {
+                index: i,
+                el: el_1,
+                effect: effects[i].effect
+            }
+
+
+
+            this.card.push(obj)
+            this.card.push(obj_1)
         }
 
         
@@ -244,8 +277,22 @@ class Field{
         event.preventDefault();
         let id = event.dataTransfer.getData('text/plain');
         let card = document.getElementById(id);
-        event.target.appendChild(card);
-        console.log(id + ' ' + event.target.id)
+        let team_target = event.target.getAttribute('team')
+
+        let segment = parseFloat(event.target.getAttribute('segment')) + 1 
+        let team_card = parseFloat(card.getAttribute('team'))
+        let effect = parseFloat(card.getAttribute('effect'))
+
+        if(
+            event.target.classList.contains('target')&& team_target== team_card
+            ){
+            event.target.appendChild(card);
+            console.log(this.balance[segment][team_card])
+            this.balance[segment][team_card] += effect
+            this.calculate_power()
+            
+        }
+        
     }
 
     dragStart(event) {
@@ -378,12 +425,12 @@ class Field{
             this.line(x, 0 , x, w)
             if(i < 3){
                 this.ctx.fillText(
-                    this.team_1[i],
+                    this.balance[i + 1 ][0],
                     x + this.t_margin,
                     this.t_margin 
                 )
                 this.ctx.fillText(
-                    this.team_2[i],
+                    this.balance[i + 1 ][1],
                     x + this.cell - this.t_margin,
                     w - this.t_margin 
                 )

@@ -15,17 +15,17 @@
                 <div class="card" draggable="true" id="card3">Card 3</div> -->
             </div>
             <div id = 'targets'>
-                    <div class="target left" id="target1"></div>
-                    <div class="target left" id="target2"></div>
-                    <div class="target left" id="target3"></div>
-                    <div class="target left" id="target4"></div>
-                    <div class="target left" id="target5"></div>
+                    <div class="target left" team ='0' segment ='-1' id="target1"></div>
+                    <div class="target left" team ='0' segment ='0' id="target2"></div>
+                    <div class="target left" team ='0' segment ='1' id="target3"></div>
+                    <div class="target left" team ='0' segment ='2' id="target4"></div>
+                    <div class="target left" team ='0' segment ='3' id="target5"></div>
 
-                    <div class="target right" id="target6"></div>
-                    <div class="target right" id="target7"></div>
-                    <div class="target right" id="target8"></div>
-                    <div class="target right" id="target9"></div>
-                    <div class="target right" id="target10"></div>
+                    <div class="target right" team ='1' segment ='-1' id="target6"></div>
+                    <div class="target right" team ='1' segment ='0' id="target7"></div>
+                    <div class="target right" team ='1' segment ='1' id="target8"></div>
+                    <div class="target right" team ='1' segment ='2' id="target9"></div>
+                    <div class="target right" team ='1' segment ='3' id="target10"></div>
 
             </div>
             <div class="deck right" id="deck_1">
@@ -39,17 +39,21 @@
             <div class = 'half'>
                 Левые
                 <div class = 'horizontal'>
-                    <input onsubmit="reload()" type="number" id="t_0_0" value="4" name="speed" min="1" max="5" />
-                    <input onsubmit="reload()" type="number" id="t_0_1" value="3" name="speed" min="1" max="5" /> 
-                    <input onsubmit="reload()" type="number" id="t_0_2" value="3" name="speed" min="1" max="5" />     
+                    <input type="number" class ='hide'  id="t_0_0" value="1" name="speed" min="1" max="5" />
+                    <input onsubmit="reload()" type="number" id="t_0_1" value="4" name="speed" min="1" max="5" />
+                    <input onsubmit="reload()" type="number" id="t_0_2" value="3" name="speed" min="1" max="5" /> 
+                    <input onsubmit="reload()" type="number" id="t_0_3" value="3" name="speed" min="1" max="5" />
+                    <input type="number" class ='hide'  id="t_0_4" value="0" name="speed" min="1" max="5" />    
                 </div>
             </div>
             <div class = 'half'>
                 Правые
                 <div class = 'horizontal'>
-                    <input onsubmit="reload()" type="number" id="t_1_2" value="4" name="speed" min="1" max="5" />
+                    <input type="number" class ='hide'  id="t_1_4" value="1" name="speed" min="1" max="5" />
+                    <input onsubmit="reload()" type="number" id="t_1_3" value="4" name="speed" min="1" max="5" />
+                    <input onsubmit="reload()" type="number" id="t_1_2" value="3" name="speed" min="1" max="5" /> 
                     <input onsubmit="reload()" type="number" id="t_1_1" value="3" name="speed" min="1" max="5" /> 
-                    <input onsubmit="reload()" type="number" id="t_1_0" value="3" name="speed" min="1" max="5" />     
+                    <input type="number" class ='hide'  id="t_1_0" value="0" name="speed" min="1" max="5" />        
                 </div>
             </div>
             <div class="half">
