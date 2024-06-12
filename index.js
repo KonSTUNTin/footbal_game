@@ -11,7 +11,7 @@ let field;
 class Field{
     constructor(ctx){
         this.ctx = ctx
-        this.margin = w / 3;
+        this.margin = w * 2 / 5;
         this.cell = (w * 2 - this.margin * 2) / 3;
         this.t_margin = 30
         this.r = 20
@@ -78,13 +78,7 @@ class Field{
         {
             this.logic()
         }
-        let l = this.players[0].length
-        for (let i = 0; i < l; i++) {
-            this.players[0][i].x += Math.cos(this.time / 200 + i /l * 7) / 10
-            this.players[1][i].x += Math.cos(this.time / 130 + i /l * 5) / 10
-            this.players[0][i].y += Math.cos(this.time / 210 + i /l * 3) / 10
-            this.players[1][i].y += Math.cos(this.time / 150 + i /l * 5) / 10
-        }
+        
 
         this.draw()
     }
@@ -236,6 +230,15 @@ class Field{
         this.players.push(team_1)
         this.players.push(team_2)
        
+    }
+    animate_players(){
+        let l = this.players[0].length
+        for (let i = 0; i < l; i++) {
+            this.players[0][i].x += Math.cos(this.time / 200 + i /l * 7) / 10
+            this.players[1][i].x += Math.cos(this.time / 130 + i /l * 5) / 10
+            this.players[0][i].y += Math.cos(this.time / 210 + i /l * 3) / 10
+            this.players[1][i].y += Math.cos(this.time / 150 + i /l * 5) / 10
+        }
     }
     draw(){
         this.clear_canvas()
@@ -421,9 +424,8 @@ canvas = document.createElement('canvas');
 canvas.width = w * 2;
 canvas.height = w;
 ctx = canvas.getContext('2d');
-document.body.insertBefore(
-    canvas, 
-    document.getElementById('layout')
+document.getElementById('container').appendChild(
+    canvas
 )
 ctx.font = "40px Arial"
 ctx.textAlign = "center"
@@ -434,3 +436,34 @@ field = new Field(ctx);
 document.getElementById('submit_button').onclick = ()=>{
     field.init_all()
 }
+
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    const cards = document.querySelectorAll('.card');
+    const targets = document.querySelectorAll('.target');
+
+    cards.forEach(card => {
+        card.addEventListener('dragstart', dragStart);
+    });
+
+    targets.forEach(target => {
+        target.addEventListener('dragover', dragOver);
+        target.addEventListener('drop', drop);
+    });
+
+    function dragStart(event) {
+        event.dataTransfer.setData('text/plain', event.target.id);
+    }
+
+    function dragOver(event) {
+        event.preventDefault();
+    }
+
+    function drop(event) {
+        event.preventDefault();
+        const id = event.dataTransfer.getData('text/plain');
+        const card = document.getElementById(id);
+        event.target.appendChild(card);
+        console.log(id + ' ' + event.target.id)
+    }
+});
